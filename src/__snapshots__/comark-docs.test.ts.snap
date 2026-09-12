@@ -1,0 +1,323 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Block > Alert 1`] = `
+"(
+    <Alert type="info">
+      <p>{"This is an important message!"}</p>
+    </Alert>
+  )"
+`;
+
+exports[`Block > Card 1`] = `
+"(
+    <Card title="My Card">
+      <p>
+        {"Card content with "}
+        <strong>{"markdown"}</strong>
+        {" support"}
+      </p>
+    </Card>
+  )"
+`;
+
+exports[`Block > Empty 1`] = `"<Divider />"`;
+
+exports[`Block 1`] = `
+"(
+    <ComponentName prop1="value1" prop2="value2">
+      <p>{"Content inside the component"}</p>
+      <p>
+        {"Can have "}
+        <strong>{"markdown"}</strong>
+        {" and other elements"}
+      </p>
+    </ComponentName>
+  )"
+`;
+
+exports[`Data binding > Frontmatter 1`] = `
+"(
+    <>
+      <hr />
+      {"\\n"}
+      <h2>{"theAnswer: 42\\nuser:\\nname: Ada"}</h2>
+      {"\\n"}
+      <Question answer={frontmatter.theAnswer} />
+      {"\\n"}
+      <p>
+        {"Hello, "}
+        <Badge label={frontmatter.user.name} />
+      </p>
+    </>
+  )"
+`;
+
+exports[`Data binding > Parent component props 1`] = `
+"(
+    <Card title="Hello" variant="primary">
+      <Badge color={props.variant} text={props.title} />
+    </Card>
+  )"
+`;
+
+exports[`Data binding > Runtime data 1`] = `
+"(
+    <p>
+      {"Welcome, "}
+      <Badge label={data.user.name} />
+      {"!"}
+    </p>
+  )"
+`;
+
+exports[`Inline 1`] = `
+"(
+    <>
+      <p>
+        {"Check out this "}
+        <IconStar />
+        {" component in the middle of text."}
+      </p>
+      {"\\n"}
+      <p>
+        {"Click the "}
+        <button type="primary">{"Submit"}</button>
+        {" to continue."}
+      </p>
+      {"\\n"}
+      <p>
+        {"The status is "}
+        <Badge color="green">{"Active"}</Badge>
+        {" right now."}
+      </p>
+    </>
+  )"
+`;
+
+exports[`Nested > Deep nesting 1`] = `
+"(
+    <Level1>
+      <Level2>
+        <Level3>
+          <p>{"Content"}</p>
+        </Level3>
+      </Level2>
+    </Level1>
+  )"
+`;
+
+exports[`Nested 1`] = `
+"(
+    <OuterComponent>
+      <p>{"Content in outer"}</p>
+      <InnerComponent variant="compact">
+        <p>{"Content in inner"}</p>
+      </InnerComponent>
+      <p>{"More content in outer"}</p>
+    </OuterComponent>
+  )"
+`;
+
+exports[`Properties > Block props 1`] = `
+"(
+    <Component
+      title="My Component"
+      type="info"
+      count={42}
+      enabled={true}
+      items={["First item", "Second item"]}
+      config={{
+        theme: "dark",
+        mode: "auto",
+      }}
+    >
+      <p>{"Component content goes here"}</p>
+      <p>
+        {"With full "}
+        <strong>{"markdown"}</strong>
+        {" support"}
+      </p>
+    </Component>
+  )"
+`;
+
+exports[`Properties > Combine both syntaxes 1`] = `
+"(
+    <Card
+      class="featured"
+      title="Featured Article"
+      author="Jane Doe"
+      tags={["markdown", "documentation"]}
+    >
+      <p>
+        {"This combines inline class "}
+        <code>{".featured"}</code>
+        {" with YAML props"}
+      </p>
+    </Card>
+  )"
+`;
+
+exports[`Properties > Inline attributes 1`] = `
+"(
+    <>
+      <Component prop="value">{}</Component>
+      {"\\n"}
+      <Component bool="">{}</Component>
+      {"\\n"}
+      <Component id="custom-id">{}</Component>
+      {"\\n"}
+      <Component class="class-name">{}</Component>
+      {"\\n"}
+      <Component class="class-one class-two">{}</Component>
+      {"\\n"}
+      <Component obj={{ key: "value" }}>{}</Component>
+      {"\\n"}
+      <Component multiple="props" bool="" id="id" class="class">
+        {}
+      </Component>
+    </>
+  )"
+`;
+
+exports[`Properties > Use cases > API documentation 1`] = `
+"(
+    <ApiEndpoint
+      method="POST"
+      path="/api/users"
+      parameters={[
+        {
+          name: "username",
+          type: "string",
+          required: true,
+        },
+        {
+          name: "email",
+          type: "string",
+          required: true,
+        },
+      ]}
+      response={{
+        status: 201,
+        body: {
+          id: "string",
+          username: "string",
+        },
+      }}
+    />
+  )"
+`;
+
+exports[`Properties > Use cases > Configuration-heavy components 1`] = `
+"(
+    <DataTable
+      columns={[
+        {
+          name: "Name",
+          field: "name",
+          sortable: true,
+        },
+        {
+          name: "Email",
+          field: "email",
+          sortable: true,
+        },
+      ]}
+      options={{
+        striped: true,
+        pageSize: 10,
+      }}
+    />
+  )"
+`;
+
+exports[`Slots > Combine with props 1`] = `
+"(
+    <Card
+      class="featured"
+      variant="elevated"
+      color="primary"
+      actions={[
+        {
+          label: "Read More",
+          url: "/article",
+        },
+        {
+          label: "Share",
+          icon: "share",
+        },
+      ]}
+    >
+      <Fragment slot="header">
+        <h2>{"Article Title"}</h2>
+        <p>
+          <em>{"By Jane Doe"}</em>
+        </p>
+      </Fragment>
+      <Fragment slot="content">
+        {"This is the main article content with "}
+        <strong>{"markdown"}</strong>
+        {" support."}
+      </Fragment>
+      <Fragment slot="footer">{"Published on January 15, 2024"}</Fragment>
+    </Card>
+  )"
+`;
+
+exports[`Slots > Correct order 1`] = `
+"(
+    <Component inline-attrs="" yaml="props">
+      <Fragment slot="slot-name">{"Slot content"}</Fragment>
+    </Component>
+  )"
+`;
+
+exports[`Slots > Default slot 1`] = `
+"(
+    <Alert type="info">
+      <p>{"This content goes to the default slot."}</p>
+    </Alert>
+  )"
+`;
+
+exports[`Slots > Default slot 2`] = `
+"(
+    <Card>
+      <Fragment slot="default">
+        {"This is the "}
+        <strong>{"default"}</strong>
+        {" slot content."}
+      </Fragment>
+      <Fragment slot="footer">{"Footer content here."}</Fragment>
+    </Card>
+  )"
+`;
+
+exports[`Slots > Incorrect order 1`] = `
+"(
+    <Component>
+      <Fragment slot="slot-name">
+        <p>{"Slot content"}</p>
+        <pre>
+          <code class="language-yaml">
+            {"yaml: props  <!-- This won't work -->\\n"}
+          </code>
+        </pre>
+      </Fragment>
+    </Component>
+  )"
+`;
+
+exports[`Slots > Named slots 1`] = `
+"(
+    <Card>
+      <Fragment slot="header">
+        <h2>{"Card Title"}</h2>
+      </Fragment>
+      <Fragment slot="content">
+        {"This is the main content of the card"}
+      </Fragment>
+      <Fragment slot="footer">{"Footer text here"}</Fragment>
+    </Card>
+  )"
+`;
