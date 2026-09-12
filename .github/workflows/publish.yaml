@@ -3,6 +3,7 @@ name: Publish to npm
 on:
   release:
     types: [released]
+  workflow_dispatch: {}
 
 permissions:
   contents: read
@@ -13,22 +14,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Set up Node.js 24.x
-        uses: actions/setup-node@v6
+      - name: Set up pnpm and Node.js
+        uses: pnpm/setup@v2
         with:
-          node-version: 24.x
-          cache: 'pnpm'
+          runtime: node@24
 
       - name: Update npm
         run: npm install -g npm@latest
-
-      - name: Install dependencies
-        run: pnpm install
 
       - name: Check
         run: pnpm check
@@ -40,4 +34,4 @@ jobs:
         run: pnpm vitest run
 
       - name: Publish package
-        run: pnpm stage publish
+        run: pnpm stage publish --no-git-checks
