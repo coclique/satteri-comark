@@ -72,7 +72,7 @@ With `satteri-comark`, Satteri transforms it into the following JSX output:
 - Block props inside code fences
 - Named slots. You can customize what slots transform into, and this package includes an adapter for [Astro](https://astro.build).
 
-### Extra feaatures
+### Extra features
 
 - In addition to normal data bindings for props, you can specify an expression to spread by setting the prop with name `::` (more convenient for inline props) or `...` (more convenient for block props) to that expression. For example, `:component{::="\{prop: 'value'\}"}`.
 
@@ -118,7 +118,7 @@ const result = mdxToJs(mdxSource, {
     directive: true, // Turn on baseline support for directive syntax
   },
   mdastPlugins: [
-    directiveTwoColons(),
+    directiveTwoColons(), // must come before `comarkMdx`
     comarkMdx(),
   ]
 })
