@@ -1,24 +1,21 @@
-/// <reference types="bun" />
-
-import * as Fs from 'node:fs/promises'
-import { $, Glob } from 'bun'
+import { $, Glob, file, write } from 'bun'
 
 const rewrites = [
   (async () => {
-    const content = await Fs.readFile('README.md', 'utf8')
+    const content = await file('README.md').text()
     const replaced = content.replaceAll('Satteri', 'Sätteri')
-    await Fs.writeFile('README.md', replaced)
+    await write('README.md', replaced)
   })(),
 ]
 
 const srcFiles = await Array.fromAsync(new Glob('src/**/*.ts').scan('.'))
 rewrites.push(
-  ...srcFiles.map(async file => {
-    const content = await Fs.readFile(file, 'utf8')
+  ...srcFiles.map(async filename => {
+    const content = await file(filename).text()
     const replaced = content.replaceAll(/\/\*\*.*?\*\//gs, match =>
       match.replaceAll('Satteri', 'Sätteri'),
     )
-    await Fs.writeFile(file, replaced)
+    await write(filename, replaced)
   }),
 )
 
