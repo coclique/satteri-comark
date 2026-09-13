@@ -20,7 +20,7 @@ export type SlotContents =
 
 export interface Options {
   /**
-   * Function for normalizing element names. Pass a no-op function to disable this behavior.
+   * Function for normalizing element names. Pass an identity function to disable this behavior.
    * @default htmlOrPascalCase
    */
   normalizeCase?: (name: string) => string
