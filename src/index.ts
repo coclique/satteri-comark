@@ -33,10 +33,11 @@ export interface Options {
   bindings?: boolean
 
   /**
-   * How to parse `[props]` code blocks in the given languages
+   * How to parse `[props]` code blocks in the given languages. Pass a `null` to disable parsing of
+   * props blocks.
    * @default viaConfbox
    */
-  propsBlocks?: Record<string, (input: string) => unknown>
+  propsBlocks?: Record<string, (input: string) => unknown> | null
 
   /**
    * Enable `[script]` code blocks
@@ -51,10 +52,16 @@ export interface Options {
   embedBlocks?: boolean
 
   /**
-   * Define slot support in container directives
+   * Define slot support in container directives. Pass a `null` to disable parsing of slots.
    * @default passthrough
    */
-  slots?: (name: string, children: SlotContents) => BlockLevelContent | BlockLevelContent[]
+  slots?: ((name: string, children: SlotContents) => BlockLevelContent | BlockLevelContent[]) | null
+
+  /**
+   * Define how to parse labels in container directives.
+   * @default this.slots ?? passthrough
+   */
+  labels?: (name: 'label', children: SlotContents) => BlockLevelContent | BlockLevelContent[]
 }
 
 const htmlTags = new Set(htmlTagsArray as string[])
@@ -91,6 +98,13 @@ export function passthrough(_name: string, children: SlotContents): BlockLevelCo
   } else {
     return children.contents
   }
+}
+
+/**
+ * Can be passed to `Options.slots` or `Options.labels` to discard parsed contents.
+ */
+export function discard(_name: string, _children: SlotContents): BlockLevelContent[] {
+  return []
 }
 
 /**
@@ -139,6 +153,62 @@ function makeAttrs(
   })
 }
 
+function parseSlots(
+  makeSlot: (name: string, children: SlotContents) => BlockLevelContent | BlockLevelContent[],
+  children: BlockLevelContent[],
+): BlockLevelContent[] {
+  const newChildren: BlockLevelContent[] = []
+  let slotName: string | null = null
+  let inside: SlotContents = { type: 'inline', contents: [] }
+
+  const pushBlock = (block: BlockLevelContent) => {
+    if (inside.type === 'block') inside.contents.push(block)
+    else
+      inside = {
+        type: 'block',
+        contents: [...(inside.contents.length ? [u('paragraph', inside.contents)] : []), block],
+      }
+  }
+
+  const pushInlines = (content: PhrasingContent[]) => {
+    if (content.length === 0) return
+
+    if (inside.type === 'block') inside.contents.push(u('paragraph', content))
+    else inside.contents.push(...content)
+  }
+
+  const commitSlot = () => {
+    if (inside.contents.length === 0) return
+
+    if (slotName) newChildren.push(...wrapOne(makeSlot(slotName, inside)))
+    else newChildren.push(...passthrough('', inside))
+  }
+
+  for (let blockIx = 0; blockIx < children.length; blockIx++) {
+    const block = children[blockIx]
+    if (block.type !== 'paragraph') {
+      pushBlock(block)
+      continue
+    }
+
+    const split = splitParagraph(block, line => /^#\S/.test(line))
+    if (!split) {
+      pushBlock(block)
+      continue
+    }
+
+    const [before, target, after] = split
+    pushInlines(before)
+    commitSlot()
+    slotName = target.slice(1)
+    inside = { type: 'inline', contents: [] }
+    pushInlines(after)
+  }
+  commitSlot()
+
+  return newChildren
+}
+
 /**
  * This Satteri plugin provides support for most of the Comark components syntax by translating
  * them into MDX.
@@ -166,6 +236,7 @@ export default ({
   scriptBlocks = true,
   embedBlocks = true,
   slots = passthrough,
+  labels = slots ?? passthrough,
 }: Options = {}): MdastPluginDefinition =>
   defineMdastPlugin({
     name: 'comark-mdx',
@@ -182,9 +253,7 @@ export default ({
         (child): child is Paragraph => !!(child.data && 'directiveLabel' in child.data),
       )
       let attributes = node.attributes
-      const children = node.children.filter(
-        child => !(child.data && 'directiveLabel' in child.data),
-      )
+      let children = node.children.filter(child => !(child.data && 'directiveLabel' in child.data))
 
       if (
         propsBlocks &&
@@ -210,59 +279,10 @@ export default ({
         children.shift()
       }
 
-      const newChildren: BlockLevelContent[] = []
-      let slotName: string | null = null
-      let inside: SlotContents = { type: 'inline', contents: [] }
-
-      const pushBlock = (block: BlockLevelContent) => {
-        if (inside.type === 'block') inside.contents.push(block)
-        else
-          inside = {
-            type: 'block',
-            contents: [...(inside.contents.length ? [u('paragraph', inside.contents)] : []), block],
-          }
-      }
-
-      const pushInlines = (content: PhrasingContent[]) => {
-        if (content.length === 0) return
-
-        if (inside.type === 'block') inside.contents.push(u('paragraph', content))
-        else inside.contents.push(...content)
-      }
-
-      const commitSlot = () => {
-        if (inside.contents.length === 0) return
-
-        if (slotName) newChildren.push(...wrapOne(slots(slotName, inside)))
-        else newChildren.push(...passthrough('', inside))
-      }
-
-      for (let blockIx = 0; blockIx < children.length; blockIx++) {
-        const block = children[blockIx]
-        if (block.type !== 'paragraph') {
-          pushBlock(block)
-          continue
-        }
-
-        const split = splitParagraph(block, line => /^#\S/.test(line))
-        if (!split) {
-          pushBlock(block)
-          continue
-        }
-
-        const [before, target, after] = split
-        pushInlines(before)
-        commitSlot()
-        slotName = target.slice(1)
-        inside = { type: 'inline', contents: [] }
-        pushInlines(after)
-      }
-      commitSlot()
+      if (slots) children = parseSlots(slots, children)
 
       if (label)
-        newChildren.unshift(
-          ...wrapOne(slots('label', { type: 'inline', contents: label.children })),
-        )
+        children.unshift(...wrapOne(labels('label', { type: 'inline', contents: label.children })))
 
       return u(
         'mdxJsxFlowElement',
@@ -271,7 +291,7 @@ export default ({
           attributes: makeAttrs(attributes, bindings),
           data: node.data,
         },
-        newChildren as (BlockContent | DefinitionContent)[],
+        children as (BlockContent | DefinitionContent)[],
       ) satisfies MdxJsxFlowElement
     },
     leafDirective(node) {
