@@ -213,7 +213,7 @@ function parseSlots(
 }
 
 /**
- * This Satteri plugin provides support for most of the Comark components syntax by translating
+ * This Sätteri plugin provides support for most of the Comark components syntax by translating
  * them into MDX.
  *
  * Note that the two-colon container syntax isn't provided by this plugin, but instead by
@@ -229,7 +229,7 @@ function parseSlots(
  * - `[props]` blocks must be code blocks, not frontmatter.
  * - You can embed MDX `import/export` statements with ```` ```jsx|tsx [script] ```` code blocks.
  * - You can embed JSX expressions with ```` ```jsx|tsx [embed] ```` code blocks.
- * - Curly braces in bindings need to be escaped. This is a Satteri bug.
+ * - Curly braces in bindings need to be escaped. This is a Sätteri bug.
  * - This plugin doesn't handle the setup of binding namespaces like `frontmatter`, `data`, etc.
  */
 export default ({

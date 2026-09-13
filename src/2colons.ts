@@ -80,7 +80,7 @@ const visit =
   }
 
 /**
- * This Satteri plugin allows for container directives using two colons, instead of three at
+ * This Sätteri plugin allows for container directives using two colons, instead of three at
  * minimum:
  *
  * ```md

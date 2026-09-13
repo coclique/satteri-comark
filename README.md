@@ -1,6 +1,6 @@
 # satteri-comark
 
-`satteri-comark` is a [Satteri](https://satteri.bruits.org) plugin that adds support for most of [Comark](https://comark.dev)'s component syntax by transforming it into MDX.
+`satteri-comark` is a [Sätteri](https://satteri.bruits.org) plugin that adds support for most of [Comark](https://comark.dev)'s component syntax by transforming it into MDX.
 
 ## See an example
 
@@ -29,7 +29,7 @@ Published on January 15, 2024
 ::
 ````
 
-With `satteri-comark`, Satteri transforms it into the following JSX output:
+With `satteri-comark`, Sätteri transforms it into the following JSX output:
 
 ```jsx
 <Card
@@ -90,15 +90,15 @@ On the other hand, the data binding namespaces that Comark provides (`frontmatte
 
 ### What is not supported
 
-- Frontmatter-style block props are not supported because Satteri cannot parse them.
-- Nesting components must each have a distinct number of colons, otherwise Satteri cannot parse them (bruits/satteri#203).
-- You must escape curly braces in inline props. This is due to a Satteri bug (bruits/satteri#301).
-- Other Comark extensions, such as admonitions (there are separate Satteri plugins you can use) or block attributes (planned: bruits/satteri#139).
+- Frontmatter-style block props are not supported because Sätteri cannot parse them.
+- Nesting components must each have a distinct number of colons, otherwise Sätteri cannot parse them (bruits/satteri#203).
+- You must escape curly braces in inline props. This is due to a Sätteri bug (bruits/satteri#301).
+- Other Comark extensions, such as admonitions (there are separate Sätteri plugins you can use) or block attributes (planned: bruits/satteri#139).
 
 
 ## How to use
 
-`satteri-comark` provides two Satteri plugins:
+`satteri-comark` provides two Sätteri plugins:
 
 ```ts
 import directiveTwoColons from 'satteri-comark/2colons'
@@ -106,7 +106,7 @@ import comarkMdx from 'satteri-comark'
 ```
 
 - `directiveTwoColons` parses two-colon directives `::component` into container directives.
-- `comarkMdx` provides all other functionalities. It is possible to use this plugin without `directiveTwoColons`, it just means that two-colon directives will be parsed as leaf directives (Satteri's deafult behavior).
+- `comarkMdx` provides all other functionalities. It is possible to use this plugin without `directiveTwoColons`, it just means that two-colon directives will be parsed as leaf directives (Sätteri's deafult behavior).
 
 To use:
 

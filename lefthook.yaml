@@ -1,0 +1,4 @@
+pre-commit:
+  jobs:
+    - name: Insert diacritics
+      run: bun scripts/insert-diacritics.ts
