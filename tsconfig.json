@@ -9,7 +9,6 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "declaration": true,
-    "erasableSyntaxOnly": true,
     "isolatedDeclarations": true,
     "verbatimModuleSyntax": true
   }

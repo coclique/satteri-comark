@@ -6,7 +6,7 @@
   "description": "Support for Comark syntax in Sätteri",
   "homepage": "https://github.com/coclique/satteri-comark",
   "bugs": "https://github.com/coclique/satteri-comark/issues",
-  "repository": "github:coclique/satteri-comark",
+  "repository": "git+https://github.com/coclique/satteri-comark.git",
   "keywords": [
     "satteri",
     "markdown",
@@ -22,12 +22,12 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.mts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./2colons": {
-      "import": "./dist/2colons.mjs",
-      "types": "./dist/2colons.d.mts"
+      "types": "./dist/2colons.d.ts",
+      "import": "./dist/2colons.js"
     }
   },
   "scripts": {
@@ -36,9 +36,11 @@
     "test": "vitest"
   },
   "devDependencies": {
+    "@arethetypeswrong/core": "^0.18.5",
     "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
     "dedent": "^1.7.2",
     "prettier": "^3.9.6",
+    "publint": "^0.3.24",
     "satteri": "^0.10.5",
     "tsdown": "^0.23.0",
     "typescript": "^6.0.3",
