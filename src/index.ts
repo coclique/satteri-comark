@@ -61,7 +61,10 @@ export interface Options {
    * Define how to parse labels in container directives.
    * @default this.slots ?? passthrough
    */
-  labels?: (name: 'label', children: SlotContents) => BlockLevelContent | BlockLevelContent[]
+  labels?: (
+    name: 'label',
+    children: { type: 'inline'; contents: PhrasingContent[] },
+  ) => BlockLevelContent | BlockLevelContent[]
 }
 
 const htmlTags = new Set(htmlTagsArray as string[])
