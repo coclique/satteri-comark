@@ -8,7 +8,11 @@ export const parser =
   (opts: TwoColons.Options & ComarkMdx.Options = {}) =>
   async (
     str: string,
-    { full = false, ...compileOpts }: MdxCompileOptions & { full?: boolean } = {},
+    {
+      full = false,
+      raw = false,
+      ...compileOpts
+    }: MdxCompileOptions & { full?: boolean; raw?: boolean } = {},
   ): Promise<string> => {
     const result = await mdxToJs(str, {
       mdastPlugins: [TwoColons.default(opts), ComarkMdx.default(opts)],
@@ -21,6 +25,9 @@ export const parser =
       elementAttributeNameCase: 'html',
       ...compileOpts,
     })
+    // Prettier cannot parse deliberately-invalid output (e.g. `bindings: false` emits props whose
+    // names aren't valid JSX identifiers), so `raw` skips formatting entirely.
+    if (raw) return result.code
     const formatted = await format(result.code, {
       parser: 'babel',
     })

@@ -52,13 +52,14 @@ export interface Options {
   embedBlocks?: boolean
 
   /**
-   * Define slot support in container directives. Pass a `null` to disable parsing of slots.
+   * Define slot support in container directives. Pass a `null` to disable parsing of slots, or
+   * pass `() => []` to discard all contents in named slots.
    * @default passthrough
    */
   slots?: ((name: string, children: SlotContents) => BlockLevelContent | BlockLevelContent[]) | null
 
   /**
-   * Define how to parse labels in container directives.
+   * Define how to parse labels in container directives. Pass `() => []` to discard labels.
    * @default this.slots ?? passthrough
    */
   labels?: (
@@ -101,13 +102,6 @@ export function passthrough(_name: string, children: SlotContents): BlockLevelCo
   } else {
     return children.contents
   }
-}
-
-/**
- * Can be passed to `Options.slots` or `Options.labels` to discard parsed contents.
- */
-export function discard(_name: string, _children: SlotContents): BlockLevelContent[] {
-  return []
 }
 
 /**
@@ -166,6 +160,8 @@ function parseSlots(
 
   const pushBlock = (block: BlockLevelContent) => {
     if (inside.type === 'block') inside.contents.push(block)
+    else if (inside.contents.length === 0 && block.type === 'paragraph')
+      inside = { type: 'inline', contents: block.children }
     else
       inside = {
         type: 'block',
@@ -205,7 +201,10 @@ function parseSlots(
     commitSlot()
     slotName = target.slice(1)
     inside = { type: 'inline', contents: [] }
-    pushInlines(after)
+    if (after.length) {
+      children[blockIx] = u('paragraph', after)
+      blockIx--
+    }
   }
   commitSlot()
 
@@ -269,7 +268,7 @@ export default ({
         const props = children[0]
         const lang = children[0].lang
         const parsed = propsBlocks[lang](props.value)
-        if (typeof parsed !== 'object' || parsed === null) {
+        if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
           ctx.report({
             node: props,
             severity: 'warning',

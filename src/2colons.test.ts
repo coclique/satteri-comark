@@ -233,3 +233,180 @@ test('any container nesting with distinct numbers of colons on each level parses
     )"
   `)
 })
+
+test('parses directives inside list items', async () => {
+  const source = dedent`
+    - ::directive
+      inside a list item
+      ::
+    - plain item
+  `
+
+  expect(await parseSelfClosing(source)).toMatchInlineSnapshot(`
+    "(
+      <ul>
+        {"\\n"}
+        <li>
+          {"\\n"}
+          <Directive>
+            <p>{"inside a list item"}</p>
+          </Directive>
+          {"\\n"}
+        </li>
+        {"\\n"}
+        <li>{"plain item"}</li>
+        {"\\n"}
+      </ul>
+    )"
+  `)
+})
+
+test('parses directives inside footnote definitions', async () => {
+  const source = dedent`
+    Text[^1]
+
+    [^1]: ::directive
+        inside a footnote
+        ::
+  `
+
+  expect(await parseSelfClosing(source)).toMatchInlineSnapshot(`
+    "(
+      <>
+        <p>
+          {"Text"}
+          <sup>
+            <a
+              href="#user-content-fn-1"
+              id="user-content-fnref-1"
+              data-footnote-ref
+              aria-describedby="footnote-label"
+            >
+              {"1"}
+            </a>
+          </sup>
+        </p>
+        {"\\n"}
+        <section data-footnotes class="footnotes">
+          <h2 class="sr-only" id="footnote-label">
+            {"Footnotes"}
+          </h2>
+          {"\\n"}
+          <ol>
+            {"\\n"}
+            <li id="user-content-fn-1">
+              {"\\n"}
+              <Directive>
+                <p>{"inside a footnote"}</p>
+              </Directive>
+              {"\\n"}
+              <a
+                href="#user-content-fnref-1"
+                data-footnote-backref=""
+                aria-label="Back to reference 1"
+                class="data-footnote-backref"
+              >
+                {"↩"}
+              </a>
+              {"\\n"}
+            </li>
+            {"\\n"}
+          </ol>
+          {"\\n"}
+        </section>
+      </>
+    )"
+  `)
+})
+
+test('parses directives inside description details', async () => {
+  const source = dedent`
+    Term
+
+    : ::directive
+      inside a description
+      ::
+  `
+
+  expect(await parseSelfClosing(source, { features: { directive: true, definitionList: true } }))
+    .toMatchInlineSnapshot(`
+    "(
+      <dl>
+        {"\\n"}
+        <dt>{"Term"}</dt>
+        {"\\n"}
+        <dd>
+          {"\\n"}
+          <Directive>
+            <p>{"inside a description"}</p>
+          </Directive>
+          {"\\n"}
+        </dd>
+        {"\\n"}
+      </dl>
+    )"
+  `)
+})
+
+test('parses directives inside JSX flow elements', async () => {
+  const source = dedent`
+    <div>
+
+    ::directive
+    inside a JSX element
+    ::
+
+    </div>
+  `
+
+  expect(await parseSelfClosing(source)).toMatchInlineSnapshot(`
+    "(
+      <div>
+        <Directive>
+          <p>{"inside a JSX element"}</p>
+        </Directive>
+      </div>
+    )"
+  `)
+})
+
+test('a 2-colon directive label becomes a directive label paragraph', async () => {
+  const source = dedent`
+    ::directive[The **label**]
+    Body text
+    ::
+  `
+
+  expect(await parseSelfClosing(source)).toMatchInlineSnapshot(`
+    "(
+      <Directive>
+        <p>
+          {"The "}
+          <strong>{"label"}</strong>
+        </p>
+        <p>{"Body text"}</p>
+      </Directive>
+    )"
+  `)
+})
+
+test('content trailing the closing `::` stays outside the directive', async () => {
+  const source = dedent`
+    ::directive
+    inside
+    ::
+    outside
+  `
+
+  expect(await parseSelfClosing(source)).toMatchInlineSnapshot(`
+    "(
+      <>
+        <Directive>
+          <p>{"inside"}</p>
+        </Directive>
+        {"\\n"}
+        <p>{"outside"}</p>
+      </>
+    )"
+  `)
+})

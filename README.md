@@ -153,7 +153,7 @@ You can pass an object with the following signature to configure this plugin:
 ```ts
 export interface Options {
   /**
-   * Function for normalizing element names. Pass a no-op function to disable this behavior.
+   * Function for normalizing element names. Pass an identity function to disable this behavior.
    * @default htmlOrPascalCase
    */
   normalizeCase?: (name: string) => string
@@ -166,10 +166,11 @@ export interface Options {
   bindings?: boolean
 
   /**
-   * How to parse `[props]` code blocks in the given languages
+   * How to parse `[props]` code blocks in the given languages. Pass a `null` to disable parsing of
+   * props blocks.
    * @default viaConfbox
    */
-  propsBlocks?: Record<string, (input: string) => unknown>
+  propsBlocks?: Record<string, (input: string) => unknown> | null
 
   /**
    * Enable `[script]` code blocks
@@ -184,10 +185,20 @@ export interface Options {
   embedBlocks?: boolean
 
   /**
-   * Define slot support in container directives
+   * Define slot support in container directives. Pass a `null` to disable parsing of slots, or
+   * pass `() => []` to discard all contents in named slots.
    * @default passthrough
    */
-  slots?: (name: string, children: SlotContents) => BlockLevelContent | BlockLevelContent[]
+  slots?: ((name: string, children: SlotContents) => BlockLevelContent | BlockLevelContent[]) | null
+
+  /**
+   * Define how to parse labels in container directives. Pass `() => []` to discard labels.
+   * @default this.slots ?? passthrough
+   */
+  labels?: (
+    name: 'label',
+    children: { type: 'inline'; contents: PhrasingContent[] },
+  ) => BlockLevelContent | BlockLevelContent[]
 }
 
 export type BlockLevelContent = BlockContent | DefinitionContent
