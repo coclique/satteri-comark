@@ -78,9 +78,9 @@ With `satteri-comark`, Sätteri transforms it into the following JSX output:
 
 - Block props support more languages by default, powered by [`confbox`](https://npmjs.com/package/confbox). Currently, in addition to YAML, JSON5, JSON with comments (JSONC), JSON, TOML, and INI are supported; just specify the language of the code block. You can also customize the behavior of prop blocks.
 
-- You can embed MDX `import/export` statements with ```` ```jsx|tsx [script] ```` code blocks.
+- You can embed MDX `import/export` statements with ` ```jsx|tsx [script] ` code blocks.
 
-- You can embed JSX expressions with ```` ```jsx|tsx [embed] ```` code blocks.
+- You can embed JSX expressions with ` ```jsx|tsx [embed] ` code blocks.
 
 ### Divergences from Comark
 
@@ -94,7 +94,6 @@ On the other hand, the data binding namespaces that Comark provides (`frontmatte
 - Nesting components must each have a distinct number of colons, otherwise Sätteri cannot parse them (bruits/satteri#203).
 - You must escape curly braces in inline props. This is due to a Sätteri bug (bruits/satteri#301).
 - Other Comark extensions, such as admonitions (there are separate Sätteri plugins you can use) or block attributes (planned: bruits/satteri#139).
-
 
 ## How to use
 
@@ -130,7 +129,7 @@ This will parse Comark syntax with the default handling for named slots: the slo
 
 You can pass an object with the following signature to configure this plugin:
 
-```ts
+```ts [extract src/2colons.ts Options]
 export interface Options {
   /**
    * Behavior when encoutering an unterminated 2-colon directive.
@@ -150,7 +149,7 @@ export interface Options {
 
 You can pass an object with the following signature to configure this plugin:
 
-```ts
+```ts [extract src/index.ts Options BlockLevelContent SlotContents]
 export interface Options {
   /**
    * Function for normalizing element names. Pass an identity function to disable this behavior.
@@ -197,19 +196,29 @@ export interface Options {
    */
   labels?: (
     name: 'label',
-    children: { type: 'inline'; contents: PhrasingContent[] },
+    children: {
+      type: 'inline'
+      contents: PhrasingContent[]
+    },
   ) => BlockLevelContent | BlockLevelContent[]
 }
 
 export type BlockLevelContent = BlockContent | DefinitionContent
 
 export type SlotContents =
-  { type: 'inline'; contents: PhrasingContent[] } | { type: 'block'; contents: BlockLevelContent[] }
+  | {
+      type: 'inline'
+      contents: PhrasingContent[]
+    }
+  | {
+      type: 'block'
+      contents: BlockLevelContent[]
+    }
 ```
 
 The default values `htmlOrPascalCase`, `viaConfbox`, and `passthrough` are as follows:
 
-```ts
+```ts [extract src/index.ts htmlOrPascalCase viaConfbox passthrough]
 /**
  * Default value for `Options.normalizeCase`. If element name is a valid HTML tag, it will be
  * converted to lowercase. Otherwise, it will be converted to PascalCase.
@@ -231,7 +240,7 @@ export function passthrough(_name: string, children: SlotContents): BlockLevelCo
 
 `satteri-comark` additionally exports a named slot adapter suitable for use with Astro. You should `import { astroFragment } from 'satteri-comark'` and pass it to the `slots` fields of the `Options` object.
 
-```ts
+````ts [extract src/index.ts astroFragment]
 /**
  * Value for `Options.slots` suitable for the Astro framework. Converts slots into slotted JSX
  * fragments:
@@ -243,4 +252,4 @@ export function passthrough(_name: string, children: SlotContents): BlockLevelCo
  * ```
  */
 export function astroFragment(name: string, children: SlotContents): BlockLevelContent
-```
+````

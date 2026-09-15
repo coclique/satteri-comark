@@ -2,3 +2,5 @@ pre-commit:
   jobs:
     - name: Insert diacritics
       run: bun scripts/insert-diacritics.ts
+    - name: Sync types to README
+      run: bun scripts/extract-signatures.ts

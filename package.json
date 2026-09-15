@@ -43,11 +43,16 @@
     "@vitest/coverage-v8": "^5.0.0",
     "dedent": "^1.7.2",
     "lefthook": "^2.1.12",
+    "mdast-util-to-markdown": "^2.1.2",
+    "oxc-transform": "^0.149.0",
     "prettier": "^3.9.6",
     "publint": "^0.3.24",
     "satteri": "^0.10.5",
+    "ts-morph": "^28.0.0",
     "tsdown": "^0.23.0",
     "typescript": "^6.0.3",
+    "unist-util-select": "^5.1.0",
+    "unist-util-visit": "^5.1.0",
     "vitest": "^5.0.0"
   },
   "dependencies": {
