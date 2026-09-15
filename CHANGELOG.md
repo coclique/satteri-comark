@@ -1,6 +1,6 @@
 # Changelog for `satteri-comark`
 
-## 0.2.0 (Unreleased)
+## 0.2.0 (2026-09-14)
 
 - Allow disabling props blocks and slots parsing in the `Options` to `comark-mdx`
 - Allow customizing output for labels separate from slots in the `Options` to `comark-mdx`
